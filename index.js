@@ -45,7 +45,7 @@ app.use(bodyParser.json())
 app.post('/chats', function(req, res){
     var newMessage = req.body.message;
     if(newMessage && newMessage.length > 0){
-        console.log('Received new chat message: ', message);
+        console.log('Received new chat message: ', newMessage);
         chats.push(newMessage);
     }
     res.end();

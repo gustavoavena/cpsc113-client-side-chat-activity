@@ -1,5 +1,7 @@
 "use strict";
 console.log('You should see this log message in your console');
+// $ = require('jQuery');
+
 
 // Put all your code in this anonymous function, which is executed
 // immediately; That way, we do not "pollute" the global namespace in
@@ -16,6 +18,14 @@ console.log('You should see this log message in your console');
     // to the page).
     // 
     function updateDOM(startIndex){
+        var chatList = $( '#chats' );
+        console.log(chatList);
+        for (var i = startIndex; i < chats.length; i++) {
+            $('<li>', {
+                html: chats[i]
+            }).appendTo(chatList);
+        }
+
     }
 
     // TODO #3: Write a function that requests an array of new chats
@@ -27,6 +37,17 @@ console.log('You should see this log message in your console');
     // should call itself again after a one or two second delay.
     // 
     function fetchChatsFromServer(){
+        var numOfCurrentChats = chats.length;
+        $.get('/chats/' + numOfCurrentChats)
+            .done(function(data) {
+                // console.log('Data = ', data);
+                chats = chats.concat(data);
+                console.log('Chats : ', chats);
+                updateDOM(numOfCurrentChats);
+                
+            });
+        setTimeout(fetchChatsFromServer, 1000);
+
     }
     
 
@@ -36,6 +57,11 @@ console.log('You should see this log message in your console');
     // See `index.js` to see how that request will be handled.
     // 
     function sendChatMessage(message){
+
+        $.post('/chats', {message: message})
+            .done(function(data) {
+                console.log('Post request completed.');
+            });
     }
     
     // TODO #1: Add an event listener that listens for when a user
@@ -43,6 +69,14 @@ console.log('You should see this log message in your console');
     // function with the value of the text entered in the textbox.
     // 
     function startAcceptingUserChats(){
+        $('#submit').click(function() {
+            console.log('Clicked button!');
+            var message = $('#message');
+            console.log(message.val());
+            sendChatMessage(message.val());
+            var textInput = $('#message');
+            textInput.val('');
+        });
     }
     
     // This event is fired when all the content on the page
